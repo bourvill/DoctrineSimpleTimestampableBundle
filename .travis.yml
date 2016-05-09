@@ -6,3 +6,14 @@ php:
   - 5.5
   - 5.6
   - 7.0
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+install: composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
+
+script:
+  - phpunit --coverage-text
