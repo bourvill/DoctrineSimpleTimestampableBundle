@@ -30,5 +30,11 @@
   },
   "suggest": {
     "doctrine/orm": "to use the extensions with the ORM"
-  }
+  },
+  "autoload":    {
+    "psr-0": {
+      "Yobrx\\Doctrine\\SimpleTimestampableBundle": ""
+    }
+  },
+  "target-dir":  "Yobrx/Doctrine/SimpleTimestampableBundle"
 }
