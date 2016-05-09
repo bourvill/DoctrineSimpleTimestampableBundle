@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="yobrx_doctrine_simple_timestampable.doctrine.event_listener.timestampable.class">Yobrx\Doctrine\SimpleTimestampableBundle\Doctrine\EventListener\Timestampable</parameter>
+    </parameters>
+
+    <services>
+        <service id="yobrx_doctrine_simple_timestampable.doctrine.event_listener.timestampable" class="%yobrx_doctrine_simple_timestampable.doctrine.event_listener.timestampable.class%">
+            <tag name="doctrine.event_listener" event="loadClassMetadata"/>
+        </service>
+    </services>
+</container>
