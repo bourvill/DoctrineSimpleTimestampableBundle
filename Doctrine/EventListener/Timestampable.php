@@ -5,7 +5,6 @@ namespace Yobrx\Doctrine\SimpleTimestampableBundle\Doctrine\EventListener;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\ORM\Tools\ResolveTargetEntityListener;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 
 /**

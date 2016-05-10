@@ -26,15 +26,16 @@
   "require-dev": {
     "doctrine/orm": ">=2.5.0",
     "doctrine/common": ">=2.5.0",
+    "mockery/mockery": "0.9.*",
     "symfony/yaml": "~2.6|~3.0"
   },
   "suggest": {
     "doctrine/orm": "to use the extensions with the ORM"
   },
-  "autoload":    {
+  "autoload": {
     "psr-0": {
       "Yobrx\\Doctrine\\SimpleTimestampableBundle": ""
     }
   },
-  "target-dir":  "Yobrx/Doctrine/SimpleTimestampableBundle"
+  "target-dir": "Yobrx/Doctrine/SimpleTimestampableBundle"
 }
