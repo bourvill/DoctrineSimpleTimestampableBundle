@@ -30,22 +30,47 @@ class Timestampable implements EventSubscriber
         /** @var ClassMetadataInfo $metadata */
         $metadata = $eventArgs->getClassMetadata();
 
-        if (!in_array('Yobrx\\Doctrine\\SimpleTimestampableBundle\\Doctrine\\Traits\\TimestampableTrait', class_uses($metadata->getName())))
-        {
+        if (!in_array('Yobrx\\Doctrine\\SimpleTimestampableBundle\\Doctrine\\Traits\\TimestampableTrait', $this->class_uses_deep($metadata->getName()))) {
             return;
         }
 
-        $metadata->mapField(array(
-            'fieldName' => 'createdAt',
-            'type' => 'datetime'
-        ));
+        if (!$metadata->hasField('createdAt')) {
+            $metadata->mapField(
+                array(
+                    'fieldName' => 'createdAt',
+                    'type'      => 'datetime'
+                )
+            );
+        }
 
-        $metadata->mapField(array(
-            'fieldName' => 'updatedAt',
-            'type' => 'datetime'
-        ));
+        if (!$metadata->hasField('updatedAt')) {
+            $metadata->mapField(
+                array(
+                    'fieldName' => 'updatedAt',
+                    'type'      => 'datetime'
+                )
+            );
+        }
 
         $metadata->addLifecycleCallback('updatedTimestamps', 'prePersist');
         $metadata->addLifecycleCallback('updatedTimestamps', 'preUpdate');
+    }
+
+    /**
+     * @param      $class
+     * @param bool $autoload
+     * @return mixed
+     */
+    public function class_uses_deep($class, $autoload = true)
+    {
+        $traits = [];
+        do {
+            $traits = array_merge(class_uses($class, $autoload), $traits);
+        } while ($class = get_parent_class($class));
+        foreach ($traits as $trait => $same) {
+            $traits = array_merge(class_uses($trait, $autoload), $traits);
+        }
+
+        return array_unique($traits);
     }
 }
