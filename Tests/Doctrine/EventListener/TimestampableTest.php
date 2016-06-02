@@ -36,6 +36,7 @@ class TimestampableTest extends \PHPUnit_Framework_TestCase
         $eventArgs = \Mockery::mock('\Doctrine\ORM\Event\LoadClassMetadataEventArgs');
         $eventArgs->shouldReceive('getClassMetadata')->once()->andReturn(\Mockery::self());
         $eventArgs->shouldReceive('getName')->once()->andReturn($timestampableTrait);
+        $eventArgs->shouldReceive('hasField')->andReturn(false);
         $eventArgs->shouldReceive('mapField')->with(array('fieldName' => 'createdAt', 'type' => 'datetime'))->once();
         $eventArgs->shouldReceive('mapField')->with(array('fieldName' => 'updatedAt', 'type' => 'datetime'))->once();
         $eventArgs->shouldReceive('addLifecycleCallback')->with('updatedTimestamps', 'prePersist')->once();
