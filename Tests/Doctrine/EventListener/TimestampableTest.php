@@ -19,35 +19,33 @@ class TimestampableTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadClassMetadataSkipClassNotUseTrait()
     {
-        $eventArgs = \Mockery::mock('\Doctrine\ORM\Event\LoadClassMetadataEventArgs');
-        $eventArgs->shouldReceive('getClassMetadata')->once()->andReturn(\Mockery::self());
-        $eventArgs->shouldReceive('getName')->once()->andReturn('\stdClass');
-        $eventArgs->shouldReceive('mapField')->never();
+        $metadata = $this->prophesize('\Doctrine\ORM\Mapping\ClassMetadataInfo');
+        $metadata->getName()->willReturn('\stdClass');
+        $metadata->addLifecycleCallback()->shouldNotBeCalled();
+
+        $eventArgs = $this->prophesize('\Doctrine\ORM\Event\LoadClassMetadataEventArgs');
+        $eventArgs->getClassMetadata()->willReturn($metadata->reveal())->shouldBeCalled();
 
         $listener = new Timestampable();
-
-        $listener->loadClassMetadata($eventArgs);
+        $listener->loadClassMetadata($eventArgs->reveal());
     }
 
     public function testLoadClassMetadataWithValidClassMapFields()
     {
         $timestampableTrait = $this->getObjectForTrait('\Yobrx\Doctrine\SimpleTimestampableBundle\Doctrine\Traits\TimestampableTrait');
+        $metadata           = $this->prophesize('\Doctrine\ORM\Mapping\ClassMetadataInfo');
+        $metadata->getName()->willReturn($timestampableTrait);
+        $metadata->hasField('createdAt')->willReturn(false)->shouldBeCalled();
+        $metadata->mapField(array('fieldName' => 'createdAt', 'type' => 'datetime'))->shouldBeCalled();
+        $metadata->hasField('updatedAt')->willReturn(false)->shouldBeCalled();
+        $metadata->mapField(array('fieldName' => 'updatedAt', 'type' => 'datetime'))->shouldBeCalled();
+        $metadata->addLifecycleCallback("updatedTimestamps", "prePersist")->shouldBeCalled();
+        $metadata->addLifecycleCallback("updatedTimestamps", "preUpdate")->shouldBeCalled();
 
-        $eventArgs = \Mockery::mock('\Doctrine\ORM\Event\LoadClassMetadataEventArgs');
-        $eventArgs->shouldReceive('getClassMetadata')->once()->andReturn(\Mockery::self());
-        $eventArgs->shouldReceive('getName')->once()->andReturn($timestampableTrait);
-        $eventArgs->shouldReceive('hasField')->andReturn(false);
-        $eventArgs->shouldReceive('mapField')->with(array('fieldName' => 'createdAt', 'type' => 'datetime'))->once();
-        $eventArgs->shouldReceive('mapField')->with(array('fieldName' => 'updatedAt', 'type' => 'datetime'))->once();
-        $eventArgs->shouldReceive('addLifecycleCallback')->with('updatedTimestamps', 'prePersist')->once();
-        $eventArgs->shouldReceive('addLifecycleCallback')->with('updatedTimestamps', 'preUpdate')->once();
+        $eventArgs = $this->prophesize('\Doctrine\ORM\Event\LoadClassMetadataEventArgs');
+        $eventArgs->getClassMetadata()->willReturn($metadata->reveal())->shouldBeCalled();
 
         $listener = new Timestampable();
-        $listener->loadClassMetadata($eventArgs);
-    }
-
-    public function tearDown()
-    {
-        \Mockery::close();
+        $listener->loadClassMetadata($eventArgs->reveal());
     }
 }
